@@ -58,9 +58,12 @@ local function createESP(player)
                 local width = 50 * scaleFactor -- Largura da caixa
                 local height = (headPosition.Y - rootPosition.Y) * 2 -- Altura da caixa (baseada na distância entre a cabeça e os pés)
 
+                -- Ajusta a posição da caixa para ficar na borda do corpo
+                local boxPosition = Vector2.new(rootPosition.X - width / 2, rootPosition.Y - height / 2)
+
                 -- Atualiza a posição e tamanho da caixa
                 box.Size = Vector2.new(width, height)
-                box.Position = Vector2.new(rootPosition.X - width / 2, rootPosition.Y - height / 2)
+                box.Position = boxPosition
                 box.Visible = true
 
                 -- Atualiza o texto do nome
