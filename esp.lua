@@ -7,7 +7,8 @@ local espSettings = {
     TextFont = Drawing.Fonts.Plex,   -- Fonte do texto
     BoxThickness = 1,                -- Espessura da caixa
     ShowDistance = true,             -- Mostrar distância
-    ShowName = true                  -- Mostrar nome
+    ShowName = true,                 -- Mostrar nome
+    BoxPadding = 5                   -- Espaçamento extra ao redor do corpo (em studs)
 }
 
 -- Função para criar um ESP para um jogador
@@ -54,11 +55,11 @@ local function createESP(player)
                 local distance = (game.Workspace.CurrentCamera.CFrame.Position - rootPart.Position).Magnitude
                 local scaleFactor = 1 / (distance * 0.1) -- Ajuste o fator de escala conforme necessário
 
-                -- Calcula o tamanho da caixa
-                local width = 50 * scaleFactor -- Largura da caixa
-                local height = (headPosition.Y - rootPosition.Y) * 2 -- Altura da caixa (baseada na distância entre a cabeça e os pés)
+                -- Calcula o tamanho da caixa com um espaçamento extra
+                local width = (50 + espSettings.BoxPadding * 2) * scaleFactor -- Largura da caixa com padding
+                local height = (headPosition.Y - rootPosition.Y) * 2 + espSettings.BoxPadding * 2 -- Altura da caixa com padding
 
-                -- Ajusta a posição da caixa para ficar na borda do corpo
+                -- Ajusta a posição da caixa para ficar fora do corpo
                 local boxPosition = Vector2.new(rootPosition.X - width / 2, rootPosition.Y - height / 2)
 
                 -- Atualiza a posição e tamanho da caixa
