@@ -15,8 +15,9 @@ local function createESP(player)
     local character = player.Character
     if not character then return end
 
+    local rootPart = character:FindFirstChild("HumanoidRootPart") or character:FindFirstChild("Torso")
     local head = character:FindFirstChild("Head")
-    if not head then return end
+    if not rootPart or not head then return end
 
     -- Cria os objetos de desenho
     local box = Drawing.new("Square")
@@ -43,26 +44,29 @@ local function createESP(player)
 
     -- Loop de atualização
     game:GetService("RunService").RenderStepped:Connect(function()
-        if character and head and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0 then
-            local position, onScreen = game.Workspace.CurrentCamera:WorldToViewportPoint(head.Position)
+        if character and rootPart and head and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0 then
+            -- Obtém a posição da cabeça e do rootPart (corpo)
+            local headPosition, headOnScreen = game.Workspace.CurrentCamera:WorldToViewportPoint(head.Position)
+            local rootPosition = game.Workspace.CurrentCamera:WorldToViewportPoint(rootPart.Position)
 
-            if onScreen then
-                -- Calcula o tamanho da caixa com base na distância
-                local distance = (game.Workspace.CurrentCamera.CFrame.Position - head.Position).Magnitude
+            if headOnScreen then
+                -- Calcula a distância do jogador
+                local distance = (game.Workspace.CurrentCamera.CFrame.Position - rootPart.Position).Magnitude
                 local scaleFactor = 1 / (distance * 0.1) -- Ajuste o fator de escala conforme necessário
 
-                local width = 100 * scaleFactor
-                local height = 200 * scaleFactor
+                -- Calcula o tamanho da caixa
+                local width = 50 * scaleFactor -- Largura da caixa
+                local height = (headPosition.Y - rootPosition.Y) * 2 -- Altura da caixa (baseada na distância entre a cabeça e os pés)
 
                 -- Atualiza a posição e tamanho da caixa
                 box.Size = Vector2.new(width, height)
-                box.Position = Vector2.new(position.X - width / 2, position.Y - height / 2)
+                box.Position = Vector2.new(rootPosition.X - width / 2, rootPosition.Y - height / 2)
                 box.Visible = true
 
                 -- Atualiza o texto do nome
                 if espSettings.ShowName then
                     nameText.Text = player.Name
-                    nameText.Position = Vector2.new(position.X, position.Y - height / 2 - 20)
+                    nameText.Position = Vector2.new(rootPosition.X, rootPosition.Y - height / 2 - 20)
                     nameText.Visible = true
                 else
                     nameText.Visible = false
@@ -71,7 +75,7 @@ local function createESP(player)
                 -- Atualiza o texto da distância
                 if espSettings.ShowDistance then
                     distanceText.Text = string.format("%.1f studs", distance)
-                    distanceText.Position = Vector2.new(position.X, position.Y + height / 2 + 10)
+                    distanceText.Position = Vector2.new(rootPosition.X, rootPosition.Y + height / 2 + 10)
                     distanceText.Visible = true
                 else
                     distanceText.Visible = false
