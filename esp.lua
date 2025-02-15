@@ -8,7 +8,7 @@ local espSettings = {
     BoxThickness = 1,                -- Espessura da caixa
     ShowDistance = true,             -- Mostrar distância
     ShowName = true,                 -- Mostrar nome
-    BoxPadding = 5                   -- Espaçamento extra ao redor do corpo (em studs)
+    BoxPadding = 10                  -- Espaçamento extra ao redor do corpo (em studs)
 }
 
 -- Função para criar um ESP para um jogador
@@ -60,7 +60,7 @@ local function createESP(player)
                 local height = (headPosition.Y - rootPosition.Y) * 2 + espSettings.BoxPadding * 2 -- Altura da caixa com padding
 
                 -- Ajusta a posição da caixa para ficar fora do corpo
-                local boxPosition = Vector2.new(rootPosition.X - width / 2, rootPosition.Y - height / 2)
+                local boxPosition = Vector2.new(rootPosition.X - width / 2 - espSettings.BoxPadding, rootPosition.Y - height / 2 - espSettings.BoxPadding)
 
                 -- Atualiza a posição e tamanho da caixa
                 box.Size = Vector2.new(width, height)
