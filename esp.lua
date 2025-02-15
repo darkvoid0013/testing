@@ -1,4 +1,3 @@
--- criado por callmegod0013
 -- Configurações da ESP Box
 local espSettings = {
     BoxColor = Color3.new(1, 1, 1),  -- Cor da caixa (branca)
@@ -18,7 +17,8 @@ local function createESP(player)
     
     local rootPart = character:FindFirstChild("HumanoidRootPart")
     local head = character:FindFirstChild("Head")
-    if not rootPart or not head then return end
+    local humanoid = character:FindFirstChild("Humanoid")
+    if not rootPart or not head or not humanoid then return end
     
     local box = Drawing.new("Square")
     local nameText = Drawing.new("Text")
@@ -38,13 +38,13 @@ local function createESP(player)
     
     -- Atualização contínua
     game:GetService("RunService").RenderStepped:Connect(function()
-        if character and rootPart and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0 then
+        if character and rootPart and humanoid and humanoid.Health > 0 then
             local rootPosition, onScreen = game.Workspace.CurrentCamera:WorldToViewportPoint(rootPart.Position)
             local headPosition = game.Workspace.CurrentCamera:WorldToViewportPoint(head.Position)
             
             if onScreen then
-                local height = (headPosition.Y - rootPosition.Y) * 2 + espSettings.BoxPadding * 2
-                local width = height / 2  -- Proporção ajustada
+                local height = (headPosition.Y - rootPosition.Y) * 2 + espSettings.BoxPadding * 4
+                local width = height / 1.8  -- Ajustado para melhor proporção
                 
                 box.Size = Vector2.new(width, height)
                 box.Position = Vector2.new(rootPosition.X - width / 2, rootPosition.Y - height / 2)
@@ -52,7 +52,7 @@ local function createESP(player)
                 
                 if espSettings.ShowName then
                     nameText.Text = player.Name
-                    nameText.Position = Vector2.new(rootPosition.X, rootPosition.Y - height / 2 - 20)
+                    nameText.Position = Vector2.new(rootPosition.X, rootPosition.Y - height / 2 - 25)
                     nameText.Visible = true
                 else
                     nameText.Visible = false
